@@ -25,6 +25,7 @@ namespace MakerScreenShot
 
         private static ConfigEntry<bool> EnableScreenshot { get; set; }
         private static ConfigEntry<KeyCode> ScreenshotHotkey { get; set; }
+        private static ConfigEntry<int> Upscale { get; set; }
         private static ConfigEntry<bool> ScreenshotMessage { get; set; }
         private static ConfigEntry<bool> ScreenshotSound { get; set; }
         private static ConfigEntry<string> Prefix { get; set; }
@@ -37,6 +38,7 @@ namespace MakerScreenShot
 
             EnableScreenshot = Config.Bind("General", "Enable", true, "Enable screen capture in Character Creator");
             ScreenshotHotkey = Config.Bind("General", "Hotkey", KeyCode.F11, "Hotkey for screen capture");
+            Upscale = Config.Bind("General", "Upscale", 1, new ConfigDescription("Multiply image resolution", new AcceptableValueRange<int>(1, 10)));
             ScreenshotMessage = Config.Bind("General", "Show messages on screen", true, "Whether screenshot messages will be displayed on screen. Messages will still be written to the log.");
             ScreenshotSound = Config.Bind("General", "Play camera sound effect", true, "Whether camera sound plays when screenshot is taken.");
             Prefix = Config.Bind("General", "Filename Prefix", "RG_", new ConfigDescription("String to append in front of screenshot filename.", null, "Advanced"));
@@ -57,6 +59,7 @@ namespace MakerScreenShot
                     {
                         if (EnableScreenshot.Value)
                         {
+                            gameScreenshot.capRate = Upscale.Value;
                             if (ScreenshotSound.Value) Illusion.Game.Utils.Sound.PlaySystemSE(SystemSE.Capture);
                             string _path = CreateCaptureFileName();
                             gameScreenshot.Capture(_path);
